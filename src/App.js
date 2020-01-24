@@ -1,38 +1,73 @@
 import React from 'react';
 import './App.css';
-import NavBar from './components/navbar';
-import Counters from './components/Counters';
+import {Container, Row, Button } from 'react-bootstrap';
+import CircleRow from './components/CircleRow';
+import Score from './components/Score';
 
 class App extends React.Component {
-  state = { 
-    counters:[
-        {id:1, value:0},
-        {id:2, value:0},
-        {id:3, value:0},
-        {id:4,value:0}
-    ]
-}
+  constructor(){
+    super();
+    this.state = {
+      randomNumber:0,
+      final:0,
+      circle:Array(36).fill(0)
+    }
+  }
+  
+  generateRandomNumber = (min, max) => {
+    const random = (Math.floor(Math.random() * (max - min + 1)) + min)
+    const newCircle =Array(36).fill(0);
+    newCircle[random]=1;
+    this.setState({
+      randomNumber: random,
+      circle:newCircle
+    })
+  }
 
-handleDelete =(idValue) => {
-    const counters = this.state.counters.filter(data =>data.id!==idValue)
-    this.setState({counters});
-}
-handleIncrement = counter =>{
-    const counters = [...this.state.counters];
-    const index = counters.indexOf(counter);
-    counters[index].value++;
-    this.setState({counters});
-}
+  alertBox =()=>{
+    alert('Your Final Score is ' +this.state.final)
+    this.setState({final:0});
+  }
+
+  handleIncrement = () =>{
+    this.setState({final:this.state.final+1});
+  }
+
   render() {
+    console.log(this.state.randomNumber,this.state.circle);
     return (
-      <div>
-        <NavBar totalCount={this.state.counters.filter(data=>data.value>0).length}/>
-        <Counters
-          onIncrement={this.handleIncrement}
-          onDelete={this.handleDelete}
-          counters={this.state.counters}
-        />
-      </div>
+      <React.Fragment>    
+        <div>
+          <Score value={this.state.final}/>
+          <span>&nbsp;&nbsp;</span>
+          <Container>
+            <Row className='ps'>
+              <CircleRow onIncrement={this.handleIncrement}/>
+            </Row>
+            <Row className='ps'>
+              <CircleRow onIncrement={this.handleIncrement}/>
+            </Row>
+            <Row className='ps'>
+              <CircleRow onIncrement={this.handleIncrement}/>
+            </Row>
+            <Row className='ps'>
+              <CircleRow onIncrement={this.handleIncrement}/>
+            </Row>
+            <Row className='ps'>
+              <CircleRow onIncrement={this.handleIncrement}/>
+            </Row>
+            <Row className='ps'>
+              <CircleRow onIncrement={this.handleIncrement}/>
+            </Row>
+          </Container>
+        </div>
+        <div style={{textAlign:"center"}}>
+          <Button onClick={()=>{this.generateRandomNumber(0,35)}} className='btn btn-primary'>Play</Button>
+          <span>&nbsp;&nbsp;</span>
+          <span>&nbsp;&nbsp;</span>
+          <Button onClick={this.alertBox} className='btn btn-warning'>Stop</Button>
+        </div>
+      </React.Fragment>
     );
   }
 }
